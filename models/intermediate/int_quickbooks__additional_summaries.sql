@@ -15,6 +15,7 @@ gross_profit as (
         cast('GROSS PROFIT' as {{ dbt.type_string() }}) as account_type,
         cast('GROSS PROFIT' as {{ dbt.type_string() }})as account_sub_type,
         cast('GROSS PROFIT' as {{ dbt.type_string() }}) as account_class,
+        cast(null as {{ dbt.type_string() }}) as class_id,
         cast('income_statement' as {{ dbt.type_string() }}) as financial_statement_helper,
         cast({{ dbt.date_trunc("year", "period_first_day") }} as date) as date_year,
         cast(period_first_day as date) as period_first_day,
@@ -22,7 +23,7 @@ gross_profit as (
         sum(case when account_type = 'Cost of Goods Sold' then period_net_change*-1 else period_net_change end) as period_net_change
     from general_ledger_balances
     where account_type in ('Cost of Goods Sold','Income')
-    group by period_first_day
+    group by period_first_day, source_relation
 ),
 
 net_operating_income as (
@@ -37,6 +38,7 @@ net_operating_income as (
         cast('NET OPERATING INCOME/EBIDTA' as {{ dbt.type_string() }}) as account_type,
         cast('NET OPERATING INCOME/EBIDTA' as {{ dbt.type_string() }})as account_sub_type,
         cast('NET OPERATING INCOME/EBIDTA' as {{ dbt.type_string() }}) as account_class,
+        cast(null as {{ dbt.type_string() }}) as class_id,
         cast('income_statement' as {{ dbt.type_string() }}) as financial_statement_helper,
         cast({{ dbt.date_trunc("year", "period_first_day") }} as date) as date_year,
         cast(period_first_day as date) as period_first_day,
@@ -48,7 +50,7 @@ net_operating_income as (
             end) as period_net_change
     from general_ledger_balances
     where account_type in ('Cost of Goods Sold','Income','Expense')
-    group by period_first_day
+    group by period_first_day, source_relation
 ),
 
 net_other_income as (
@@ -63,6 +65,7 @@ net_other_income as (
         cast('NET OTHER INCOME' as {{ dbt.type_string() }}) as account_type,
         cast('NET OTHER INCOME' as {{ dbt.type_string() }})as account_sub_type,
         cast('NET OTHER INCOME' as {{ dbt.type_string() }}) as account_class,
+        cast(null as {{ dbt.type_string() }}) as class_id,
         cast('income_statement' as {{ dbt.type_string() }}) as financial_statement_helper,
         cast({{ dbt.date_trunc("year", "period_first_day") }} as date) as date_year,
         cast(period_first_day as date) as period_first_day,
@@ -73,7 +76,7 @@ net_other_income as (
             end) as period_net_change
     from general_ledger_balances
     where account_type in ('Other Income','Other Expense')
-    group by period_first_day
+    group by period_first_day, source_relation
 ),
 
 net_income as (
@@ -88,6 +91,7 @@ net_income as (
         cast('NET INCOME' as {{ dbt.type_string() }}) as account_type,
         cast('NET INCOME' as {{ dbt.type_string() }})as account_sub_type,
         cast('NET INCOME' as {{ dbt.type_string() }}) as account_class,
+        cast(null as {{ dbt.type_string() }}) as class_id,
         cast('income_statement' as {{ dbt.type_string() }}) as financial_statement_helper,
         cast({{ dbt.date_trunc("year", "period_first_day") }} as date) as date_year,
         cast(period_first_day as date) as period_first_day,
@@ -100,7 +104,7 @@ net_income as (
             end) as period_net_change
     from general_ledger_balances
     where account_type in ('Cost of Goods Sold','Income','Expense','Other Income','Other Expense')
-    group by period_first_day
+    group by period_first_day, source_relation
 ),
 
 total_revenue as (
@@ -115,6 +119,7 @@ total_revenue as (
         cast('TOTAL REVENUE' as {{ dbt.type_string() }}) as account_type,
         cast('TOTAL REVENUE' as {{ dbt.type_string() }})as account_sub_type,
         cast('Revenue' as {{ dbt.type_string() }}) as account_class,
+        cast(null as {{ dbt.type_string() }}) as class_id,
         cast('income_statement' as {{ dbt.type_string() }}) as financial_statement_helper,
         cast({{ dbt.date_trunc("year", "period_first_day") }} as date) as date_year,
         cast(period_first_day as date) as period_first_day,
@@ -122,7 +127,7 @@ total_revenue as (
         sum(period_net_change) as period_net_change
     from general_ledger_balances
     where account_type in ('Income')
-    group by period_first_day
+    group by period_first_day, source_relation
 ),
 
 total_cost_of_goods_sold as (
@@ -137,6 +142,7 @@ total_cost_of_goods_sold as (
         cast('TOTAL COST OF GOODS SOLD' as {{ dbt.type_string() }}) as account_type,
         cast('TOTAL COST OF GOODS SOLD' as {{ dbt.type_string() }})as account_sub_type,
         cast('Expense' as {{ dbt.type_string() }}) as account_class,
+        cast(null as {{ dbt.type_string() }}) as class_id,
         cast('income_statement' as {{ dbt.type_string() }}) as financial_statement_helper,
         cast({{ dbt.date_trunc("year", "period_first_day") }} as date) as date_year,
         cast(period_first_day as date) as period_first_day,
@@ -144,7 +150,7 @@ total_cost_of_goods_sold as (
         sum(period_net_change*-1) as period_net_change
     from general_ledger_balances
     where account_type in ('Cost of Goods Sold')
-    group by period_first_day
+    group by period_first_day, source_relation
 ),
 
 total_expenses as (
@@ -159,6 +165,7 @@ total_expenses as (
         cast('TOTAL EXPENSES' as {{ dbt.type_string() }}) as account_type,
         cast('TOTAL EXPENSES' as {{ dbt.type_string() }})as account_sub_type,
         cast('Expense' as {{ dbt.type_string() }}) as account_class,
+        cast(null as {{ dbt.type_string() }}) as class_id,
         cast('income_statement' as {{ dbt.type_string() }}) as financial_statement_helper,
         cast({{ dbt.date_trunc("year", "period_first_day") }} as date) as date_year,
         cast(period_first_day as date) as period_first_day,
@@ -166,7 +173,7 @@ total_expenses as (
         sum(period_net_change*-1) as period_net_change
     from general_ledger_balances
     where account_type in ('Expense')
-    group by period_first_day
+    group by period_first_day, source_relation
 ),
 
 total_other_income as (
@@ -181,6 +188,7 @@ total_other_income as (
         cast('TOTAL OTHER INCOME' as {{ dbt.type_string() }}) as account_type,
         cast('TOTAL OTHER INCOME' as {{ dbt.type_string() }})as account_sub_type,
         cast('Revenue' as {{ dbt.type_string() }}) as account_class,
+        cast(null as {{ dbt.type_string() }}) as class_id,
         cast('income_statement' as {{ dbt.type_string() }}) as financial_statement_helper,
         cast({{ dbt.date_trunc("year", "period_first_day") }} as date) as date_year,
         cast(period_first_day as date) as period_first_day,
@@ -188,7 +196,7 @@ total_other_income as (
         sum(period_net_change) as period_net_change
     from general_ledger_balances
     where account_type in ('Other Income')
-    group by period_first_day
+    group by period_first_day, source_relation
 ),
 
 total_other_expenses as (
@@ -203,6 +211,7 @@ total_other_expenses as (
         cast('TOTAL OTHER EXPENSES' as {{ dbt.type_string() }}) as account_type,
         cast('TOTAL OTHER EXPENSES' as {{ dbt.type_string() }})as account_sub_type,
         cast('Expense' as {{ dbt.type_string() }}) as account_class,
+        cast(null as {{ dbt.type_string() }}) as class_id,
         cast('income_statement' as {{ dbt.type_string() }}) as financial_statement_helper,
         cast({{ dbt.date_trunc("year", "period_first_day") }} as date) as date_year,
         cast(period_first_day as date) as period_first_day,
@@ -210,7 +219,7 @@ total_other_expenses as (
         sum(period_net_change*-1) as period_net_change
     from general_ledger_balances
     where account_type in ('Other Expense')
-    group by period_first_day
+    group by period_first_day, source_relation
 ),
 
 additional_summaries as (
@@ -252,6 +261,7 @@ final as (
         account_type,
         account_sub_type,
         account_class,
+        class_id,
         financial_statement_helper,
         date_year,
         period_first_day,
