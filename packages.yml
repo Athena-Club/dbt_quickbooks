@@ -2,4 +2,4 @@ packages:
   #- package: fivetran/quickbooks_source
   #  version: [">=0.8.0", "<0.9.0"]
   - git: "https://github.com/Athena-Club/dbt_quickbooks_source.git"
-    revision: 3ee56124bacc1fa3e0d4fa3d9cb5a2e8c5b3f9d6
+    revision: a9e77fe46a8ef24ec73f44319623c3e6fbfe63cd
