@@ -48,7 +48,7 @@ final as (
         account_ordinal
     from general_ledger_by_period
     where account_number like '31%'   
-    group by 1
+    group by 1,2,4,14
 
     union all
     
@@ -69,7 +69,7 @@ final as (
         account_ordinal
     from general_ledger_by_period
     where parent_account_name like 'Loan from%'  
-    group by 1
+    group by 1,2,4,14
 
 )
 
