@@ -31,7 +31,7 @@ bill_pay_currency as (
     select
         bill_linked_payments.bill_payment_id,
         sum(bills.total_amount*exchange_rate) as total_amount,
-        source_relation
+        bill_linked_payments.source_relation
     from bill_linked_payments 
     left join bills
         on bill_linked_payments.bill_id = bills.bill_id
@@ -126,7 +126,7 @@ final as (
 
     select
         transaction_id,
-        surce_relation,
+        bill_payment_join.source_relation,
         index,
         transaction_date,
         cast(null as {{ dbt.type_string() }}) as customer_id,
@@ -140,7 +140,7 @@ final as (
     from bill_payment_join
     left join exchange_gl_accounts
         on bill_payment_join.account_id = exchange_gl_accounts.account_id
-        and bill_payment_join.surce_relation = exchange_gl_accounts.surce_relation
+        and bill_payment_join.source_relation = exchange_gl_accounts.source_relation
     where payment_amount != bank_amount
 )
 
