@@ -86,7 +86,7 @@ bill_payment_join as (
        and bill_payments.source_relation = bill_pay_currency.source_relation
     left join ap_accounts
         on bill_payments.currency_id = ap_accounts.currency_id
-        on bill_payments.source_relation = ap_accounts.source_relation
+        and bill_payments.source_relation = ap_accounts.source_relation
 ),
 
 final as (
@@ -140,7 +140,7 @@ final as (
     from bill_payment_join
     left join exchange_gl_accounts
         on bill_payment_join.account_id = exchange_gl_accounts.account_id
-        on bill_payment_join.surce_relation = exchange_gl_accounts.surce_relation
+        and bill_payment_join.surce_relation = exchange_gl_accounts.surce_relation
     where payment_amount != bank_amount
 )
 
