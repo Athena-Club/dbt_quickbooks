@@ -19,8 +19,11 @@ final as (
         account_number,
         account_id,
         account_name,
-        period_net_change as amount,
-        account_ordinal
+        case 
+            when account_class = 'Expense' then period_net_change * -1
+            else period_net_change 
+        end as amount
+         account_ordinal
     from general_ledger_by_period
 )
 

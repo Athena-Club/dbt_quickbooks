@@ -10,6 +10,11 @@ retained_earnings as (
     from {{ ref('int_quickbooks__retained_earnings') }}
 ),
 
+additional_summaries as (
+    select *
+    from {{ref('int_quickbooks__additional_summaries')}}
+),
+
 {% if var('financial_statement_ordinal') %}
 ordinals as ( 
 
@@ -32,6 +37,12 @@ balances_earnings_unioned as (
 
     select *
     from retained_earnings
+
+    union all
+
+    select *
+    from additional_summaries    
+
 ), 
 
 final as (
