@@ -89,6 +89,7 @@ ar_accounts as (
     from {{ ref('stg_quickbooks__account') }}
 
     where account_type = 'Accounts Receivable'
+        and name = 'Accounts Receivable (A/R)'
 ),
 
 invoice_join as (
@@ -190,7 +191,8 @@ final as (
         end as transaction_source
     from invoice_filter
 
-    cross join ar_accounts
+    left join ar_accounts
+        on invoice_filter.source_relation = ar_accounts.source_relation
 )
 
 select *
