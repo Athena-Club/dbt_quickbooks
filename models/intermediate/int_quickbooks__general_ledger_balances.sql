@@ -107,6 +107,7 @@ gl_patch as (
             and gl_beginning_balance.date_month = gl_accounting_periods.period_first_day
             and gl_beginning_balance.date_year = gl_accounting_periods.date_year
             and coalesce(gl_beginning_balance.class_id, '0') = coalesce(gl_accounting_periods.class_id, '0')
+            and gl_beginning_balance.source_relation = gl_accounting_periods.source_relation
 ),
 
 gl_value_partition as (
