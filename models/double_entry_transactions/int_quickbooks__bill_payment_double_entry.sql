@@ -37,7 +37,7 @@ bill_pay_currency as (
         on bill_linked_payments.bill_id = bills.bill_id
         and bill_linked_payments.source_relation = bills.source_relation
     where bill_linked_payments.bill_payment_id is not null
-        --and bills.currency_id != 'USD'
+        and bills.currency_id != case when bills.source_relation = 'quickbooks' then 'USD' else 'CAD' end
     group by 1,3
 ),
 accounts as (
@@ -139,8 +139,7 @@ final as (
         'bill payment' as transaction_source
     from bill_payment_join
     left join exchange_gl_accounts
-        on bill_payment_join.account_id = exchange_gl_accounts.account_id
-        and bill_payment_join.source_relation = exchange_gl_accounts.source_relation
+        on bill_payment_join.source_relation = exchange_gl_accounts.source_relation
     where payment_amount != bank_amount
 )
 
