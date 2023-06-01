@@ -38,7 +38,7 @@ gl_cumulative_balance as (
     select
         *,
         case when financial_statement_helper = 'balance_sheet'
-            then sum(period_balance) over (partition by account_id, class_id order by date_month, account_id, class_id rows unbounded preceding) 
+            then sum(period_balance) over (partition by source_relation, account_id, class_id order by source_relation, date_month, account_id, class_id rows unbounded preceding) 
             else 0
                 end as cumulative_balance
     from gl_period_balance
@@ -117,7 +117,7 @@ gl_value_partition as (
         sum(case when period_ending_balance_starter is null 
             then 0 
             else 1 
-                end) over (order by account_id, class_id, period_last_day rows unbounded preceding) as gl_partition
+                end) over (order by source_relation, account_id, class_id, period_last_day rows unbounded preceding) as gl_partition
     from gl_patch
 ),
  
