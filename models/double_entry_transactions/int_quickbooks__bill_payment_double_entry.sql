@@ -30,7 +30,7 @@ bill_linked_payments as (
 bill_pay_currency as (
     select
         bill_linked_payments.bill_payment_id,
-        sum(bills.total_amount*exchange_rate) as total_amount,
+        sum(bills.total_amount*coalesce(exchange_rate,1)) as total_amount,
         bill_linked_payments.source_relation
     from bill_linked_payments 
     left join bills
@@ -74,8 +74,8 @@ bill_payment_join as (
         bill_payments.source_relation,
         row_number() over(partition by bill_payments.bill_payment_id order by bill_payments.transaction_date) - 1 as index,
         bill_payments.transaction_date,
-        round(coalesce(bill_pay_currency.total_amount,bill_payments.total_amount*bill_payments.exchange_rate),2) as payment_amount,
-        round(bill_payments.total_amount*bill_payments.exchange_rate,2) as bank_amount,
+        round(coalesce(bill_pay_currency.total_amount,bill_payments.total_amount*coalesce(bill_payments.exchange_rate,1)),2) as payment_amount,
+        round(bill_payments.total_amount*coalesce(bill_payments.exchange_rate,1),2) as bank_amount,
         coalesce(bill_payments.credit_card_account_id,bill_payments.check_bank_account_id) as payment_account_id,
         ap_accounts.account_id,
         bill_payments.vendor_id,
