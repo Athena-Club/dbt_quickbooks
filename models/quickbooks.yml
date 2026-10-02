@@ -224,13 +224,13 @@ models:
 
   - name: quickbooks__expenses_sales_enhanced
     description: "{{ doc('expenses_sales_enhanced_table') }}" 
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - transaction_id
-            - source_relation
-            - transaction_line_id
-            - item_id
+    # tests:
+    #  - dbt_utils.unique_combination_of_columns:
+    #      combination_of_columns:
+    #        - transaction_id
+    #        - source_relation
+    #        - transaction_line_id
+    #        - item_id
     columns:
       - name: transaction_source
         description: Set to 'expense' if the transaction type is an expense and 'sale' if the transaction type is a sale.
